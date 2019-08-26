@@ -12,7 +12,7 @@ import java.util.Arrays;
  * This is a wrapped version of the CumulusServer from the KB-Cumulus-API, where the necessary methods for this project
  * are implemented.
  */
-public class CumulusClient {
+public class CumulusClient implements AutoCloseable {
     /** Constants for allowing this client to write back to Cumulus.*/
     protected static final boolean CUMULUS_WRITE_ACCESS = false;
 
@@ -32,7 +32,7 @@ public class CumulusClient {
      */
     public CumulusClient(String serverUrl, String userName, String userPassword, String catalog) {
         this.catalog = catalog;
-        this. cumulusConfiguration = new CumulusConfiguration(CUMULUS_WRITE_ACCESS, serverUrl, userName, userPassword,
+        this.cumulusConfiguration = new CumulusConfiguration(CUMULUS_WRITE_ACCESS, serverUrl, userName, userPassword,
                 Arrays.asList(catalog));
         this.cumulusServer = new CumulusServer(cumulusConfiguration);
     }
@@ -57,5 +57,10 @@ public class CumulusClient {
                 GUID.UID_ASSET_RELATION_IS_VARIATION);
         subAsset.createRelationToRecord(master, Constants.FieldNames.RELATED_MASTER_ASSETS,
                 GUID.UID_ASSET_RELATION_IS_VARIATION);
+    }
+
+    @Override
+    public void close() throws Exception {
+        cumulusServer.close();
     }
 }
