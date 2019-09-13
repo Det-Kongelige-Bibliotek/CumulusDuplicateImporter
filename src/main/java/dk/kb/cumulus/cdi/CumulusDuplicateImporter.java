@@ -10,7 +10,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -22,9 +21,7 @@ public class CumulusDuplicateImporter {
         long groupId;
         String fileName;
 
-        void setGroupId(long groupId) {
-            this.groupId = groupId;
-        }
+        void setGroupId(long groupId) { this.groupId = groupId; }
 
         void setFileName(String fileName) {
             this.fileName = fileName;
@@ -66,7 +63,7 @@ public class CumulusDuplicateImporter {
             // Create relation master->subAsset if Group ID is equal
             try (CumulusClient cumulusClient = new CumulusClient(server, username, password, catalog)) {
 
-                XSSFWorkbook workbook = null;
+                XSSFWorkbook workbook;
                 try (FileInputStream file = new FileInputStream((new File(excelFile)))) {
                     workbook = new XSSFWorkbook(file);
                 }
@@ -96,6 +93,7 @@ public class CumulusDuplicateImporter {
                 workbook.close();
 
                 long masterId = -1L;
+                CumulusRecord masterRecord = null;
 
                 for (IdAndName entry : idAndNameList) {
                     CumulusRecord record = cumulusClient.getRecord(entry.getFileName());
@@ -107,11 +105,15 @@ public class CumulusDuplicateImporter {
                         if (!cmd.hasOption("v")) {
                             System.out.println("SubAsset: " + record + "; " + entry.getFileName());
                         }
+                        if (masterRecord != null) {
+                            cumulusClient.setDuplicateRelationship(masterRecord, record);
+                        }
                     } else {
                         if (!cmd.hasOption("v")) {
                             System.out.println("Master: " + record + "; " + entry.getFileName());
                         }
                         masterId = entry.groupId;
+                        masterRecord = record;
                     }
                 }
             }
@@ -125,11 +127,11 @@ public class CumulusDuplicateImporter {
     private static class HandleOptions {
         private String[] args;
         private CommandLine cmd;
-        private String serv;
-        private String un;
-        private String pw;
-        private String cat;
-        private String fil;
+        private String s; // -s Cumulus Server URL
+        private String u; // -u Cumulus user name
+        private String p; // -p Cumulus user password
+        private String c; // -c Cumulus catalog
+        private String f; // -f Excel file with duplicates
 
         HandleOptions(String... args) {
             this.args = args;
@@ -148,24 +150,25 @@ public class CumulusDuplicateImporter {
             return cmd;
         }
 
-        public String getServer() {
-            return serv;
+        String getServer() {
+            return s;
         }
 
-        public String getUsername() {
-            return un;
+
+
+
+        String getUsername() { return u; }
+
+        String getPassword() {
+            return p;
         }
 
-        public String getPassword() {
-            return pw;
+        String getCatalog() {
+            return c;
         }
 
-        public String getCatalog() {
-            return cat;
-        }
-
-        public String getFile() {
-            return fil;
+        String getFile() {
+            return f;
         }
 
         HandleOptions invoke() throws ParseException {
@@ -213,37 +216,37 @@ public class CumulusDuplicateImporter {
             if (cmd.hasOption("h")) {
                 PrintHelp(options);
             }
-            serv = null;
+            s = null;
             if (cmd.hasOption("s")){
-                serv = cmd.getOptionValue("s");
+                s = cmd.getOptionValue("s");
             } else {
                 System.out.println("Cumulus server URL must be entered");
                 PrintHelp(options);
             }
-            un = null;
+            u = null;
             if (cmd.hasOption("u")){
-                un = cmd.getOptionValue("u");
+                u = cmd.getOptionValue("u");
             } else {
                 System.out.println("Cumulus user name must be entered");
                 PrintHelp(options);
             }
-            pw = null;
+            p = null;
             if (cmd.hasOption("p")){
-                pw = cmd.getOptionValue("p");
+                p = cmd.getOptionValue("p");
             } else {
                 System.out.println("Cumulus password must be entered");
                 PrintHelp(options);
             }
-            cat = null;
+            c = null;
             if (cmd.hasOption("c")){
-                cat = cmd.getOptionValue("c");
+                c = cmd.getOptionValue("c");
             } else {
                 System.out.println("Cumulus catalog must be entered");
                 PrintHelp(options);
             }
-            fil = null;
+            f = null;
             if (cmd.hasOption("f")){
-                fil = cmd.getOptionValue("f");
+                f = cmd.getOptionValue("f");
             } else {
                 System.out.println("Excel file with duplicates must be entered");
                 PrintHelp(options);
