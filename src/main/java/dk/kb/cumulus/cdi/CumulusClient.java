@@ -14,7 +14,7 @@ import java.util.Arrays;
  */
 public class CumulusClient implements AutoCloseable {
     /** Constants for allowing this client to write back to Cumulus.*/
-    protected static final boolean CUMULUS_WRITE_ACCESS = false;
+    protected static final boolean CUMULUS_WRITE_ACCESS = true;
 
     /** The Cumulus configuration.*/
     protected final CumulusConfiguration cumulusConfiguration;

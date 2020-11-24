@@ -1,7 +1,13 @@
 package dk.kb.cumulus.cdi;
 
 import dk.kb.cumulus.CumulusRecord;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -21,21 +27,20 @@ public class CumulusDuplicateImporter {
         long groupId;
         String fileName;
 
-        void setGroupId(long groupId) { this.groupId = groupId; }
-
+        void setGroupId(long groupId) {
+            this.groupId = groupId;
+        }
         void setFileName(String fileName) {
             this.fileName = fileName;
         }
-
         long getGroupId() {
             return groupId;
         }
-
         String getFileName() {
             return fileName;
         }
     }
-    private static ArrayList<IdAndName> idAndNameList = new ArrayList<>();
+    private static final ArrayList<IdAndName> idAndNameList = new ArrayList<>();
 
 
     /**
@@ -77,15 +82,17 @@ public class CumulusDuplicateImporter {
                         Cell groupIdCells = row.getCell(groupIdColumnIndex);
                         Cell filenameCells = row.getCell(filenameColumnIndex);
                         IdAndName idAndName = new IdAndName();
-                        if (groupIdCells != null) {
+                        if (groupIdCells == null || filenameCells == null)
+                        {
+                            break;
+                        }
+                        else {
                             if (CellType.NUMERIC == groupIdCells.getCellType()) {
                                 idAndName.setGroupId((long) groupIdCells.getNumericCellValue());
                             }
                         }
-                        if (filenameCells != null) {
-                            if (CellType.STRING == filenameCells.getCellType()) {
-                                idAndName.setFileName(filenameCells.getStringCellValue());
-                            }
+                        if (CellType.STRING == filenameCells.getCellType()) {
+                            idAndName.setFileName(filenameCells.getStringCellValue());
                         }
                         idAndNameList.add(idAndName); // store corresponding Group ID and Filename
                     }
@@ -125,7 +132,7 @@ public class CumulusDuplicateImporter {
     }
 
     private static class HandleOptions {
-        private String[] args;
+        private final String[] args;
         private CommandLine cmd;
         private String s; // -s Cumulus Server URL
         private String u; // -u Cumulus user name
@@ -154,10 +161,9 @@ public class CumulusDuplicateImporter {
             return s;
         }
 
-
-
-
-        String getUsername() { return u; }
+        String getUsername() {
+            return u;
+        }
 
         String getPassword() {
             return p;
