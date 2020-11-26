@@ -52,7 +52,6 @@ public class CumulusClient implements AutoCloseable {
      * @param subAsset The subAsset record.
      */
     public void setDuplicateRelationship(CumulusRecord master, CumulusRecord subAsset) {
-        // TODO: is it the variation relation we want?
         master.createRelationToRecord(subAsset, Constants.FieldNames.RELATED_SUB_ASSETS,
                 GUID.UID_ASSET_RELATION_IS_VARIATION);
         subAsset.createRelationToRecord(master, Constants.FieldNames.RELATED_MASTER_ASSETS,

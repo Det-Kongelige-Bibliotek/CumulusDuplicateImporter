@@ -69,7 +69,7 @@ public class CumulusDuplicateImporter {
             try (CumulusClient cumulusClient = new CumulusClient(server, username, password, catalog)) {
 
                 XSSFWorkbook workbook;
-                try (FileInputStream file = new FileInputStream((new File(excelFile)))) {
+                try (FileInputStream file = new FileInputStream(new File(excelFile))) {
                     workbook = new XSSFWorkbook(file);
                 }
                 XSSFSheet firstSheet = workbook.getSheetAt(0);
