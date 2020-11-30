@@ -8,17 +8,23 @@
   <artifactId>CumulusDuplicateImporter</artifactId>
   <version>1.0-SNAPSHOT</version>
 
+  <parent>
+    <groupId>dk.statsbiblioteket.sbprojects</groupId>
+    <artifactId>sbprojects-parent</artifactId>
+    <version>22</version>
+  </parent>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.main.class>dk.kb.cumulus.cdi.CumulusDuplicateImporter</java.main.class>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
     <!-- To disable forbidden APIs check, replace the line below with
      <api.check.phase>none</api.check.phase> -->
-<!--    <api.check.phase>process-classes</api.check.phase>-->
-    <java.version>1.8</java.version>
+    <api.check.phase>process-classes</api.check.phase>
     <cumulus.path>/usr/local/Cumulus_Java_SDK/CumulusJC.jar</cumulus.path>
+    <api.check.phase>process-classes</api.check.phase>
   </properties>
 
   <dependencies>
@@ -101,24 +107,18 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.2</version>
-      </plugin>
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-war-plugin</artifactId>-->
+<!--        <version>3.2.2</version>-->
+<!--      </plugin>-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.2</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>3.0.0</version>
         <configuration>
           <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
         </configuration>
@@ -126,11 +126,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-         <version>3.4</version>
         <configuration>
           <sourceEncoding>utf-8</sourceEncoding>
           <minimumTokens>100</minimumTokens>
-          <targetJdk>1.8</targetJdk>
         </configuration>
         <executions>
           <execution>
@@ -142,31 +140,7 @@
           </execution>
         </executions>
       </plugin>
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-jar-plugin</artifactId>-->
-<!--        <version>2.5</version>-->
-<!--        <configuration>-->
-<!--          <archive>-->
-<!--            <manifest>-->
-<!--&lt;!&ndash;              <addClasspath>true</addClasspath>&ndash;&gt;-->
-<!--              <mainClass>dk.kb.cumulus.cdi.CumulusDuplicateImporter</mainClass>-->
-<!--              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>-->
-<!--              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>-->
-<!--            </manifest>-->
-<!--          </archive>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-surefire-plugin</artifactId>-->
-<!--        <version>2.18.1</version>-->
-<!--&lt;!&ndash;        <configuration>&ndash;&gt;-->
-<!--&lt;!&ndash;          <forkMode>once</forkMode>&ndash;&gt;-->
-<!--&lt;!&ndash;          <workingDirectory>target</workingDirectory>&ndash;&gt;-->
-<!--&lt;!&ndash;          <argLine>-Djava.library.path=${cumulus.path}&lt;!&ndash;${basedir}/src/main/resources/lib&ndash;&gt;</argLine>&ndash;&gt;-->
-<!--&lt;!&ndash;        </configuration>&ndash;&gt;-->
-<!--      </plugin>-->
+
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -189,14 +163,9 @@
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
-          <archive>
-            <manifest>
-              <mainClass>dk.kb.cumulus.cdi.CumulusDuplicateImporter</mainClass>
-            </manifest>
-          </archive>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
+          <descriptors>
+            <descriptor>src/main/assembly/assembly.xml</descriptor>
+          </descriptors>
         </configuration>
         <executions>
           <execution>
@@ -217,21 +186,16 @@
           <mainClass>dk.kb.cumulus.cdi.CumulusDuplicateImporter</mainClass>
           <executable>java</executable>
           <arguments>
-            <argument>-classpath</argument>
-            <argument>/home/dahe/.m2/repository/com/canto/cumulus/cumulus-jc/10.1.3/cumulus-jc-101.3.jar</argument>
-<!--            <argument>/usr/local/Cumulus_Java_SDK/CumulusJC.jar/</argument>-->
           </arguments>
         </configuration>
         <executions>
           <execution>
             <goals>
-              <goal>exec</goal>
+              <goal>java</goal>
             </goals>
           </execution>
         </executions>
       </plugin>
-
-
     </plugins>
 
     <pluginManagement>
@@ -263,16 +227,6 @@
         </plugin>
       </plugins>
     </pluginManagement>
-<!--    <resources>-->
-<!--      <resource>-->
-<!--        <directory>src/main/resources/</directory>-->
-<!--        <excludes>-->
-<!--          <exclude>conf/*</exclude>-->
-<!--          <exclude>bin/*</exclude>-->
-<!--          <exclude>id/**</exclude>-->
-<!--        </excludes>-->
-<!--      </resource>-->
-<!--    </resources>-->
 
   </build>
 
@@ -282,16 +236,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.9</version>
-        <configuration>
-          <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-          <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.0.0</version>
         <configuration>
           <failOnError>false</failOnError>
           <skip>true</skip>
@@ -300,7 +248,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.0.0</version>
         <configuration>
           <configLocation>checkstyle.xml</configLocation>
         </configuration>
@@ -316,7 +263,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.9.0</version>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
