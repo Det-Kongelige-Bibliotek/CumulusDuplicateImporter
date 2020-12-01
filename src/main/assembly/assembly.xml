@@ -10,12 +10,6 @@
             <directoryMode>0755</directoryMode>
             <fileMode>0644</fileMode>
             <useTransitiveFiltering>true</useTransitiveFiltering>
-<!--            <excludes>-->
-<!--                <exclude>-->
-<!--                    <groupId>com.canto</groupId>-->
-<!--                    <artifactId>cumulus</artifactId>-->
-<!--                </exclude>-->
-<!--            </excludes>-->
         </dependencySet>
     </dependencySets>
 
